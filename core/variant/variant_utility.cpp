@@ -540,23 +540,51 @@ struct VariantUtilityFunctions {
 			r_error.expected = 2;
 			return Variant();
 		}
-		Variant base = *p_args[0];
-		Variant ret;
+		const Variant &base = *p_args[0];
+		const Variant::Type base_type = base.get_type();
+		Variant ret = base;
+
 		for (int i = 1; i < p_argcount; i++) {
-			bool valid;
-			Variant::evaluate(Variant::OP_LESS, base, *p_args[i], ret, valid);
-			if (!valid) {
+			const Variant &x = *p_args[i];
+			if (x.get_type() != base_type) {
 				r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
-				r_error.expected = base.get_type();
+				r_error.expected = base_type;
 				r_error.argument = i;
 				return Variant();
 			}
-			if (ret.booleanize()) {
-				base = *p_args[i];
+			switch (base_type) {
+				case Variant::INT: {
+					ret = MAX(VariantInternalAccessor<int64_t>::get(&ret), VariantInternalAccessor<int64_t>::get(&x));
+				} break;
+				case Variant::FLOAT: {
+					ret = MAX(VariantInternalAccessor<double>::get(&ret), VariantInternalAccessor<double>::get(&x));
+				} break;
+				case Variant::VECTOR2: {
+					ret = VariantInternalAccessor<Vector2>::get(&ret).max(VariantInternalAccessor<Vector2>::get(&x));
+				} break;
+				case Variant::VECTOR2I: {
+					ret = VariantInternalAccessor<Vector2i>::get(&ret).max(VariantInternalAccessor<Vector2i>::get(&x));
+				} break;
+				case Variant::VECTOR3: {
+					ret = VariantInternalAccessor<Vector3>::get(&ret).max(VariantInternalAccessor<Vector3>::get(&x));
+				} break;
+				case Variant::VECTOR3I: {
+					ret = VariantInternalAccessor<Vector3i>::get(&ret).max(VariantInternalAccessor<Vector3i>::get(&x));
+				} break;
+				case Variant::VECTOR4: {
+					ret = VariantInternalAccessor<Vector4>::get(&ret).max(VariantInternalAccessor<Vector4>::get(&x));
+				} break;
+				case Variant::VECTOR4I: {
+					ret = VariantInternalAccessor<Vector4i>::get(&ret).max(VariantInternalAccessor<Vector4i>::get(&x));
+				} break;
+				default: {
+					r_error.error = Callable::CallError::CALL_ERROR_INVALID_METHOD;
+					return Variant();
+				}
 			}
 		}
 		r_error.error = Callable::CallError::CALL_OK;
-		return base;
+		return ret;
 	}
 
 	static inline double maxf(double x, double y) {
@@ -573,23 +601,51 @@ struct VariantUtilityFunctions {
 			r_error.expected = 2;
 			return Variant();
 		}
-		Variant base = *p_args[0];
-		Variant ret;
+		const Variant &base = *p_args[0];
+		const Variant::Type base_type = base.get_type();
+		Variant ret = base;
+
 		for (int i = 1; i < p_argcount; i++) {
-			bool valid;
-			Variant::evaluate(Variant::OP_GREATER, base, *p_args[i], ret, valid);
-			if (!valid) {
+			const Variant &x = *p_args[i];
+			if (x.get_type() != base_type) {
 				r_error.error = Callable::CallError::CALL_ERROR_INVALID_ARGUMENT;
-				r_error.expected = base.get_type();
+				r_error.expected = base_type;
 				r_error.argument = i;
 				return Variant();
 			}
-			if (ret.booleanize()) {
-				base = *p_args[i];
+			switch (base_type) {
+				case Variant::INT: {
+					ret = MIN(VariantInternalAccessor<int64_t>::get(&ret), VariantInternalAccessor<int64_t>::get(&x));
+				} break;
+				case Variant::FLOAT: {
+					ret = MIN(VariantInternalAccessor<double>::get(&ret), VariantInternalAccessor<double>::get(&x));
+				} break;
+				case Variant::VECTOR2: {
+					ret = VariantInternalAccessor<Vector2>::get(&ret).min(VariantInternalAccessor<Vector2>::get(&x));
+				} break;
+				case Variant::VECTOR2I: {
+					ret = VariantInternalAccessor<Vector2i>::get(&ret).min(VariantInternalAccessor<Vector2i>::get(&x));
+				} break;
+				case Variant::VECTOR3: {
+					ret = VariantInternalAccessor<Vector3>::get(&ret).min(VariantInternalAccessor<Vector3>::get(&x));
+				} break;
+				case Variant::VECTOR3I: {
+					ret = VariantInternalAccessor<Vector3i>::get(&ret).min(VariantInternalAccessor<Vector3i>::get(&x));
+				} break;
+				case Variant::VECTOR4: {
+					ret = VariantInternalAccessor<Vector4>::get(&ret).min(VariantInternalAccessor<Vector4>::get(&x));
+				} break;
+				case Variant::VECTOR4I: {
+					ret = VariantInternalAccessor<Vector4i>::get(&ret).min(VariantInternalAccessor<Vector4i>::get(&x));
+				} break;
+				default: {
+					r_error.error = Callable::CallError::CALL_ERROR_INVALID_METHOD;
+					return Variant();
+				}
 			}
 		}
 		r_error.error = Callable::CallError::CALL_OK;
-		return base;
+		return ret;
 	}
 
 	static inline double minf(double x, double y) {

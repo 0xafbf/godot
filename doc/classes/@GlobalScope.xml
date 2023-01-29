@@ -656,9 +656,10 @@
 		<method name="max" qualifiers="vararg">
 			<return type="Variant" />
 			<description>
-				Returns the maximum of the given values. This function can take any number of arguments.
+				Returns the maximum of the given values. This function can take any number of arguments. It does component-wise comparison for vectors.
 				[codeblock]
 				max(1, 7, 3, -6, 5) # Returns 7
+				max(Vector2(2, 4), Vector2(8, 1)) # Returns Vector2(8, 4)
 				[/codeblock]
 			</description>
 		</method>
@@ -689,9 +690,10 @@
 		<method name="min" qualifiers="vararg">
 			<return type="Variant" />
 			<description>
-				Returns the minimum of the given values. This function can take any number of arguments.
+				Returns the minimum of the given values. This function can take any number of arguments. It does component-wise comparison for vectors.
 				[codeblock]
 				min(1, 7, 3, -6, 5) # Returns -6
+				min(Vector2(2, 4), Vector2(8, 1)) # Returns Vector2(2, 1)
 				[/codeblock]
 			</description>
 		</method>
