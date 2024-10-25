@@ -394,7 +394,7 @@ public:
 			Vector2 res;
 			if (segment_intersects_segment(v1, v2, p_point, further_away, &res)) {
 				intersections++;
-				if (res.is_equal_approx(p_point)) {
+				if (res == p_point) {
 					// Point is in one of the polygon edges.
 					return true;
 				}
