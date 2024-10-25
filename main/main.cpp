@@ -2934,6 +2934,10 @@ Error Main::setup2(bool p_show_boot_logo) {
 			window_position = &position;
 		}
 
+		if (init_windowed) {
+			window_mode = DisplayServer::WINDOW_MODE_WINDOWED;
+		}
+
 		Color boot_bg_color = GLOBAL_DEF_BASIC("application/boot_splash/bg_color", boot_splash_bg_color);
 		DisplayServer::set_early_window_clear_color_override(true, boot_bg_color);
 
