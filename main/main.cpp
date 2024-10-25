@@ -1612,6 +1612,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 			if (N) {
 				String bplist = N->get();
 				breakpoints = bplist.split(",");
+				main_args.push_back(arg);
+				main_args.push_back(bplist);
 				N = N->next();
 			} else {
 				OS::get_singleton()->print("Missing list of breakpoints, aborting.\n");
@@ -1682,6 +1684,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 							"Invalid debug host address, it should be of the form <protocol>://<host/IP>:<port>.\n");
 					goto error;
 				}
+				main_args.push_back(arg);
+				main_args.push_back(debug_uri);
 				N = N->next();
 			} else {
 				OS::get_singleton()->print("Missing remote debug host address, aborting.\n");
@@ -1690,6 +1694,8 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 		} else if (arg == "--editor-pid") { // not exposed to user
 			if (N) {
 				editor_pid = N->get().to_int();
+				main_args.push_back(arg);
+				main_args.push_back(N->get());
 				N = N->next();
 			} else {
 				OS::get_singleton()->print("Missing editor PID argument, aborting.\n");
@@ -3623,6 +3629,12 @@ int Main::start() {
 			} else if (E->get() == "--patches") {
 				patches = E->next()->get().split(",", false);
 #endif
+			} else if (E->get() == "--remote-debug") {
+				parsed_pair = true;
+			} else if (E->get() == "--editor-pid") {
+				parsed_pair = true;
+			} else if (E->get() == "--breakpoints") {
+				parsed_pair = true;
 			} else {
 				// The parameter does not match anything known, don't skip the next argument
 				parsed_pair = false;
