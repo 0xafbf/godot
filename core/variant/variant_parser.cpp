@@ -1931,6 +1931,22 @@ Error VariantParser::parse(Stream *p_stream, Variant &r_ret, String &r_err_str, 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 
+static String ftos_fix(float p_value) {
+	if (p_value == 0.0) {
+		return "0"; //avoid negative zero (-0) being written, which may annoy git, svn, etc. for changes when they don't exist.
+	} else if (isnan(p_value)) {
+		return "nan";
+	} else if (isinf(p_value)) {
+		if (p_value > 0) {
+			return "inf";
+		} else {
+			return "inf_neg";
+		}
+	} else {
+		return ftoss(p_value);
+	}
+}
+
 static String rtos_fix(double p_value) {
 	if (p_value == 0.0) {
 		return "0"; //avoid negative zero (-0) being written, which may annoy git, svn, etc. for changes when they don't exist.
@@ -2081,7 +2097,7 @@ Error VariantWriter::write(const Variant &p_variant, StoreStringFunc p_store_str
 		// Misc types.
 		case Variant::COLOR: {
 			Color c = p_variant;
-			p_store_string_func(p_store_string_ud, "Color(" + rtos_fix(c.r) + ", " + rtos_fix(c.g) + ", " + rtos_fix(c.b) + ", " + rtos_fix(c.a) + ")");
+			p_store_string_func(p_store_string_ud, "Color(" + ftos_fix(c.r) + ", " + ftos_fix(c.g) + ", " + ftos_fix(c.b) + ", " + ftos_fix(c.a) + ")");
 		} break;
 		case Variant::STRING_NAME: {
 			String str = p_variant;
@@ -2396,7 +2412,7 @@ Error VariantWriter::write(const Variant &p_variant, StoreStringFunc p_store_str
 				if (i > 0) {
 					p_store_string_func(p_store_string_ud, ", ");
 				}
-				p_store_string_func(p_store_string_ud, rtos_fix(ptr[i]));
+				p_store_string_func(p_store_string_ud, ftos_fix(ptr[i]));
 			}
 
 			p_store_string_func(p_store_string_ud, ")");
@@ -2471,7 +2487,7 @@ Error VariantWriter::write(const Variant &p_variant, StoreStringFunc p_store_str
 				if (i > 0) {
 					p_store_string_func(p_store_string_ud, ", ");
 				}
-				p_store_string_func(p_store_string_ud, rtos_fix(ptr[i].r) + ", " + rtos_fix(ptr[i].g) + ", " + rtos_fix(ptr[i].b) + ", " + rtos_fix(ptr[i].a));
+				p_store_string_func(p_store_string_ud, ftos_fix(ptr[i].r) + ", " + ftos_fix(ptr[i].g) + ", " + ftos_fix(ptr[i].b) + ", " + ftos_fix(ptr[i].a));
 			}
 
 			p_store_string_func(p_store_string_ud, ")");

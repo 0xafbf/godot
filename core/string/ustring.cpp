@@ -1959,6 +1959,42 @@ String String::num_scientific(double p_num) {
 	// MinGW requires _set_output_format() to conform to C99 output for printf
 	unsigned int old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
 #endif
+	snprintf(buf, 256, "%.16lg", p_num);
+
+#if defined(__MINGW32__) && defined(_TWO_DIGIT_EXPONENT) && !defined(_UCRT)
+	_set_output_format(old_exponent_format);
+#endif
+
+#else
+	sprintf(buf, "%.16lg", p_num);
+#endif
+
+	buf[255] = 0;
+
+	return buf;
+}
+
+String String::float_scientific(float p_num) {
+	if (Math::is_nan(p_num)) {
+		return "nan";
+	}
+
+	if (Math::is_inf(p_num)) {
+		if (signbit(p_num)) {
+			return "-inf";
+		} else {
+			return "inf";
+		}
+	}
+
+	char buf[256];
+
+#if defined(__GNUC__) || defined(_MSC_VER)
+
+#if defined(__MINGW32__) && defined(_TWO_DIGIT_EXPONENT) && !defined(_UCRT)
+	// MinGW requires _set_output_format() to conform to C99 output for printf
+	unsigned int old_exponent_format = _set_output_format(_TWO_DIGIT_EXPONENT);
+#endif
 	snprintf(buf, 256, "%lg", p_num);
 
 #if defined(__MINGW32__) && defined(_TWO_DIGIT_EXPONENT) && !defined(_UCRT)
@@ -5509,6 +5545,10 @@ String uitos(uint64_t p_val) {
 
 String rtos(double p_val) {
 	return String::num(p_val);
+}
+
+String ftoss(float p_val) {
+	return String::float_scientific(p_val);
 }
 
 String rtoss(double p_val) {

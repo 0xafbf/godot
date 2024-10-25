@@ -331,6 +331,7 @@ public:
 	String unquote() const;
 	static String num(double p_num, int p_decimals = -1);
 	static String num_scientific(double p_num);
+	static String float_scientific(float p_num);
 	static String num_real(double p_num, bool p_trailing = true);
 	static String num_int64(int64_t p_num, int base = 10, bool capitalize_hex = false);
 	static String num_uint64(uint64_t p_num, int base = 10, bool capitalize_hex = false);
@@ -510,6 +511,7 @@ String operator+(char32_t p_chr, const String &p_str);
 String itos(int64_t p_val);
 String uitos(uint64_t p_val);
 String rtos(double p_val);
+String ftoss(float p_val); //scientific version
 String rtoss(double p_val); //scientific version
 
 struct NoCaseComparator {
